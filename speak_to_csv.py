@@ -9,13 +9,17 @@ import tempfile
 import os
 
 user_api_key = st.sidebar.text_input(
-    label="#### Your OpenAI API key 👇",
-    placeholder="Paste your openAI API key, sk-",
+    label="#### Sua OpenAi API Key 👇",
+    placeholder="Cole sua chave aqui, sk-",
     type="password")
 
+# Definir a chave da API como variável de ambiente
+with open(r'C:\Users\Equiplano\Desktop\API.txt', 'r') as file:
+    api_key = file.readline()
+user_api_key = api_key
 os.environ["OPENAI_API_KEY"] = user_api_key
 
-uploaded_file = st.sidebar.file_uploader("upload", type="csv")
+uploaded_file = st.sidebar.file_uploader("Importar arquivo", type="csv")
 
 if uploaded_file:
     with tempfile.NamedTemporaryFile(delete=False) as tmp_file:
@@ -37,7 +41,6 @@ if uploaded_file:
 
         result = chain({"question": query, "chat_history": st.session_state['history']})
         st.session_state['history'].append((query, result["answer"]))
-
         return result["answer"]
 
 
@@ -45,10 +48,10 @@ if uploaded_file:
         st.session_state['history'] = []
 
     if 'generated' not in st.session_state:
-        st.session_state['generated'] = ["Hello ! Ask me anything about " + uploaded_file.name + " 🤗"]
+        st.session_state['generated'] = ["Pergunte-me qualquer coisa sobre o arquivo " + uploaded_file.name + "."]
 
     if 'past' not in st.session_state:
-        st.session_state['past'] = ["Hey ! 👋"]
+        st.session_state['past'] = [" 👋 Seja bem vindo(a)! carreguei o arquivo e agora já sei um pouco sobre ele... 🤗"]
 
     # container for the chat history
     response_container = st.container()
@@ -57,7 +60,7 @@ if uploaded_file:
 
     with container:
         with st.form(key='my_form', clear_on_submit=True):
-            user_input = st.text_input("Query:", placeholder="Talk about your csv data here (:", key='input')
+            user_input = st.text_input("Query:", placeholder="Pergunte-me qualquer coisa sobre o arquivo aqui.", key='input')
             submit_button = st.form_submit_button(label='Send')
 
         if submit_button and user_input:
@@ -70,4 +73,4 @@ if uploaded_file:
         with response_container:
             for i in range(len(st.session_state['generated'])):
                 message(st.session_state["past"][i], is_user=True, key=str(i) + '_user', avatar_style="big-smile")
-                message(st.session_state["generated"][i], key=str(i), avatar_style="thumbs")
+                message(st.session_state["generated"][i], key=str(i), avatar_style="adventurer")
