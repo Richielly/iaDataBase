@@ -57,20 +57,20 @@ with open(r'C:\Users\Equiplano\Desktop\API.txt', 'r') as file:
 # Configuração do banco de dados
 db = SQLDatabase.from_uri("postgresql://postgres:es74079@localhost:5432/postgres")
 
+# print(db.get_table_info(['arr_nfs1']))
+
 llm = OpenAI(temperature=0, openai_api_key=api_key, model_name='gpt-3.5-turbo')
 
 # Instrução de consulta
 QUERY = """
-Given an input question, first create a syntactically correct postgresql query to run, then look at the results of the query and return the answer.
-Use the following format:
-
-Question: "Question here"
-SQLQuery: "SQL Query to run"
-SQLResult: "Result of the SQLQuery"
-Answer: "Final answer here"
-
+Dada uma pergunta de entrada, primeiro crie uma consulta postgresql sintaticamente correta para executar, depois observe os resultados da consulta e retorne a resposta.
+Use o seguinte formato:
+Answer: "Resposta final aqui"
 {question}
 """
+# Question: "pergunta aqui"
+# SQLQuery: "Consulta SQL para executar"
+# SQLResult: "Resultado da SQLQuery"
 
 # Configuração da database chain
 db_chain = SQLDatabaseChain(llm=llm, database=db, verbose=True)
@@ -79,6 +79,8 @@ db_chain = SQLDatabaseChain(llm=llm, database=db, verbose=True)
 st.title('Bate Papo com Data Base')
 
 prompt = st.text_input("Digite uma pergunta ou dê uma instrução:")
+
+print(prompt)
 
 if prompt:
     try:
